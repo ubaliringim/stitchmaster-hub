@@ -1,6 +1,9 @@
 export interface UserDetails {
   id: number;
   name: string;
+  role: string;
+  email: string;
+  status: string;
   dailyDate: string;
   dailyCollection: number;
   dailyReturning: number;

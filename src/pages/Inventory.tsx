@@ -13,9 +13,33 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 
 const Inventory = () => {
   const [items] = useState([
-    { id: 1, name: "Cotton Fabric", quantity: 500, unit: "meters", status: "In Stock" },
-    { id: 2, name: "Buttons", quantity: 1000, unit: "pieces", status: "Low Stock" },
-    { id: 3, name: "Zippers", quantity: 750, unit: "pieces", status: "In Stock" },
+    { 
+      id: 1, 
+      name: "Cotton Fabric", 
+      totalQuantity: 500,
+      collectedQuantity: 300,
+      remainingQuantity: 200,
+      unit: "meters", 
+      status: "In Stock" 
+    },
+    { 
+      id: 2, 
+      name: "Buttons", 
+      totalQuantity: 1000,
+      collectedQuantity: 600,
+      remainingQuantity: 400,
+      unit: "pieces", 
+      status: "Low Stock" 
+    },
+    { 
+      id: 3, 
+      name: "Zippers", 
+      totalQuantity: 750,
+      collectedQuantity: 450,
+      remainingQuantity: 300,
+      unit: "pieces", 
+      status: "In Stock" 
+    },
   ]);
 
   return (
@@ -32,7 +56,9 @@ const Inventory = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Item Name</TableHead>
-              <TableHead>Quantity</TableHead>
+              <TableHead>Total Quantity</TableHead>
+              <TableHead>Collected Quantity</TableHead>
+              <TableHead>Remaining Quantity</TableHead>
               <TableHead>Unit</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -42,7 +68,9 @@ const Inventory = () => {
             {items.map((item) => (
               <TableRow key={item.id}>
                 <TableCell className="font-medium">{item.name}</TableCell>
-                <TableCell>{item.quantity}</TableCell>
+                <TableCell>{item.totalQuantity}</TableCell>
+                <TableCell>{item.collectedQuantity}</TableCell>
+                <TableCell>{item.remainingQuantity}</TableCell>
                 <TableCell>{item.unit}</TableCell>
                 <TableCell>
                   <span

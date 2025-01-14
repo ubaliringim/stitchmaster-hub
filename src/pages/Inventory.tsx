@@ -12,13 +12,18 @@ import {
 import { Plus, Edit, Trash2 } from "lucide-react";
 
 const Inventory = () => {
+  // Mock daily collections data (in a real app, this would come from an API or database)
+  const dailyCollections = {
+    1: 200, // itemId: totalDailyCollections
+    2: 400,
+    3: 300,
+  };
+
   const [items] = useState([
     { 
       id: 1, 
       name: "Cotton Fabric", 
       totalQuantity: 500,
-      collectedQuantity: 300,
-      remainingQuantity: 200,
       unit: "meters", 
       status: "In Stock" 
     },
@@ -26,8 +31,6 @@ const Inventory = () => {
       id: 2, 
       name: "Buttons", 
       totalQuantity: 1000,
-      collectedQuantity: 600,
-      remainingQuantity: 400,
       unit: "pieces", 
       status: "Low Stock" 
     },
@@ -35,12 +38,22 @@ const Inventory = () => {
       id: 3, 
       name: "Zippers", 
       totalQuantity: 750,
-      collectedQuantity: 450,
-      remainingQuantity: 300,
       unit: "pieces", 
       status: "In Stock" 
     },
   ]);
+
+  // Calculate collected and remaining quantities
+  const calculateQuantities = (item: typeof items[0]) => {
+    const totalDailyCollections = dailyCollections[item.id] || 0;
+    const collectedQuantity = item.totalQuantity - totalDailyCollections;
+    const remainingQuantity = item.totalQuantity - collectedQuantity;
+    
+    return {
+      collectedQuantity,
+      remainingQuantity
+    };
+  };
 
   return (
     <div>
@@ -65,34 +78,37 @@ const Inventory = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {items.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.name}</TableCell>
-                <TableCell>{item.totalQuantity}</TableCell>
-                <TableCell>{item.collectedQuantity}</TableCell>
-                <TableCell>{item.remainingQuantity}</TableCell>
-                <TableCell>{item.unit}</TableCell>
-                <TableCell>
-                  <span
-                    className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      item.status === "In Stock"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
-                    }`}
-                  >
-                    {item.status}
-                  </span>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button variant="ghost" size="icon" className="mr-2">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="text-red-500">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {items.map((item) => {
+              const { collectedQuantity, remainingQuantity } = calculateQuantities(item);
+              return (
+                <TableRow key={item.id}>
+                  <TableCell className="font-medium">{item.name}</TableCell>
+                  <TableCell>{item.totalQuantity}</TableCell>
+                  <TableCell>{collectedQuantity}</TableCell>
+                  <TableCell>{remainingQuantity}</TableCell>
+                  <TableCell>{item.unit}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        item.status === "In Stock"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-yellow-100 text-yellow-800"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="ghost" size="icon" className="mr-2">
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="text-red-500">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </Card>

@@ -12,10 +12,20 @@ import {
 import { Plus, Edit, Trash2 } from "lucide-react";
 import UserDashboard from "@/components/UserDashboard";
 import { UserDetails } from "@/types/user";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
 
 const Users = () => {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  const [users] = useState<UserDetails[]>([
+  const [users, setUsers] = useState<UserDetails[]>([
     {
       id: 1,
       name: "John Doe",
@@ -74,8 +84,40 @@ const Users = () => {
       payeeName: "Bob Johnson",
     },
   ]);
+  const [editingUser, setEditingUser] = useState<UserDetails | null>(null);
+  const { toast } = useToast();
 
   const selectedUser = users.find(user => user.id === selectedUserId);
+
+  const handleEditUser = (user: UserDetails) => {
+    setEditingUser({ ...user });
+  };
+
+  const handleSaveEdit = () => {
+    if (editingUser) {
+      setUsers(users.map(user => 
+        user.id === editingUser.id ? editingUser : user
+      ));
+      setEditingUser(null);
+      toast({
+        title: "User Updated",
+        description: "User details have been successfully updated.",
+      });
+    }
+  };
+
+  const handleDeleteUser = (userId: number) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      setUsers(users.filter(user => user.id !== userId));
+      if (selectedUserId === userId) {
+        setSelectedUserId(null);
+      }
+      toast({
+        title: "User Deleted",
+        description: "User has been successfully removed.",
+      });
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -119,24 +161,71 @@ const Users = () => {
                   </span>
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="mr-2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      // Edit functionality here
-                    }}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="mr-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditUser(user);
+                        }}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Edit User</DialogTitle>
+                      </DialogHeader>
+                      {editingUser && (
+                        <div className="space-y-4">
+                          <div>
+                            <Label htmlFor="name">Name</Label>
+                            <Input
+                              id="name"
+                              value={editingUser.name}
+                              onChange={(e) => setEditingUser({
+                                ...editingUser,
+                                name: e.target.value
+                              })}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                              id="email"
+                              value={editingUser.email}
+                              onChange={(e) => setEditingUser({
+                                ...editingUser,
+                                email: e.target.value
+                              })}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="role">Role</Label>
+                            <Input
+                              id="role"
+                              value={editingUser.role}
+                              onChange={(e) => setEditingUser({
+                                ...editingUser,
+                                role: e.target.value
+                              })}
+                            />
+                          </div>
+                          <Button onClick={handleSaveEdit}>Save Changes</Button>
+                        </div>
+                      )}
+                    </DialogContent>
+                  </Dialog>
                   <Button 
                     variant="ghost" 
                     size="icon" 
                     className="text-red-500"
                     onClick={(e) => {
                       e.stopPropagation();
-                      // Delete functionality here
+                      handleDeleteUser(user.id);
                     }}
                   >
                     <Trash2 className="h-4 w-4" />

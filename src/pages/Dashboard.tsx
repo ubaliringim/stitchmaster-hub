@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Users, Package, Clock, DollarSign } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const StatCard = ({ title, value, icon: Icon, trend }: { title: string; value: string; icon: any; trend: string }) => (
   <Card className="p-6">
@@ -19,6 +20,7 @@ const StatCard = ({ title, value, icon: Icon, trend }: { title: string; value: s
 );
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const stats = [
     { title: "Total Users", value: "1,234", icon: Users, trend: "+5.25%" },
     { title: "Inventory Items", value: "856", icon: Package, trend: "-2.65%" },
@@ -40,6 +42,30 @@ const Dashboard = () => {
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Recent Activities</h2>
           <div className="space-y-4">
+            <div 
+              className="flex items-center space-x-4 py-3 border-b cursor-pointer hover:bg-gray-50"
+              onClick={() => navigate('/users')}
+            >
+              <div className="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">Daily Collection Status</p>
+                <p className="text-sm text-gray-500">View all collections</p>
+              </div>
+            </div>
+            <div 
+              className="flex items-center space-x-4 py-3 border-b cursor-pointer hover:bg-gray-50"
+              onClick={() => navigate('/users')}
+            >
+              <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">Daily Returning Status</p>
+                <p className="text-sm text-gray-500">View all returns</p>
+              </div>
+            </div>
             {[1, 2, 3].map((_, i) => (
               <div key={i} className="flex items-center space-x-4 py-3 border-b last:border-0">
                 <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center">
@@ -65,7 +91,11 @@ const Dashboard = () => {
                   </div>
                   <div>
                     <p className="text-sm font-medium">Cotton Fabric</p>
-                    <p className="text-sm text-gray-500">Stock: 234 units</p>
+                    <p className="text-sm text-gray-500">Total: 234 units</p>
+                    <div className="flex gap-4 mt-1">
+                      <span className="text-xs text-green-600">Collected: 180</span>
+                      <span className="text-xs text-orange-600">Remaining: 54</span>
+                    </div>
                   </div>
                 </div>
                 <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">

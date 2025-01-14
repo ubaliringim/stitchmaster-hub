@@ -11,11 +11,9 @@ import Inventory from "./pages/Inventory";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+  <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
         <MainLayout>
           <Routes>
             <Route path="/" element={<Dashboard />} />
@@ -23,9 +21,11 @@ const App = () => (
             <Route path="/inventory" element={<Inventory />} />
           </Routes>
         </MainLayout>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+        <Toaster />
+        <Sonner />
+      </TooltipProvider>
+    </QueryClientProvider>
+  </BrowserRouter>
 );
 
 export default App;

@@ -1,11 +1,30 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserDetails } from "@/types/user";
+import axios from "axios";
 
-interface UserDashboardProps {
-  user: UserDetails;
-}
+const EmployerDashboard = () => {
+  const { id } = useParams<{ id: string }>(); // Get the employer ID from the URL
+  const [user, setUser] = useState<UserDetails | null>(null);
 
-const UserDashboard = ({ user }: UserDashboardProps) => {
+  useEffect(() => {
+    const fetchEmployerDetails = async () => {
+      try {
+        const response = await axios.get(`http://localhost/getEmployerDetails.php?id=${id}`);
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching employer details:", error);
+      }
+    };
+
+    fetchEmployerDetails();
+  }, [id]);
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   const totalAmount = user.totalDue * user.amountToPay;
   const outstanding = user.dailyCollection - user.dailyReturning;
 
@@ -80,4 +99,4 @@ const UserDashboard = ({ user }: UserDashboardProps) => {
   );
 };
 
-export default UserDashboard;
+export default EmployerDashboard;

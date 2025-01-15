@@ -6,7 +6,7 @@ const Sidebar = () => {
   
   const menuItems = [
     { icon: Home, label: "Dashboard", path: "/" },
-    { icon: Users, label: "Users", path: "/users" },
+    { icon: Users, label: "Employers", path: "/employers" },
     { icon: Package, label: "Inventory", path: "/inventory" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];

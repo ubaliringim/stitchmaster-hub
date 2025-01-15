@@ -3,41 +3,41 @@ import mysql from 'mysql2/promise';
 import cors from 'cors';
 
 const app = express();
-
-// Configure CORS to allow requests from any origin
-app.use(cors({
-  origin: '*', // Allow all origins
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow these HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'] // Allow these headers
-}));
-
+app.use(cors());
 app.use(express.json());
 
-// MySQL Connection Pool
+// Simple MySQL Connection
 const pool = mysql.createPool({
   host: 'localhost',
-  user: 'root', // default XAMPP username
-  password: '', // default XAMPP password
-  database: 'sewing_admin_db',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  user: 'root',
+  password: '',
+  database: 'sewing_admin_db'
 });
 
 // Get all employers
 app.get('/api/employers', async (req, res) => {
   try {
-    console.log('Fetching employers...');
     const [rows] = await pool.execute('SELECT * FROM employers');
-    console.log('Employers fetched successfully:', rows);
     res.json(rows);
   } catch (error) {
-    console.error('Error fetching employers:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Error fetching employers' });
   }
 });
 
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Add new employer
+app.post('/api/employers', async (req, res) => {
+  const { name, email, role } = req.body;
+  try {
+    const [result] = await pool.execute(
+      'INSERT INTO employers (name, email, role) VALUES (?, ?, ?)',
+      [name, email, role]
+    );
+    res.json({ message: 'Employer added successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error adding employer' });
+  }
+});
+
+app.listen(5000, () => {
+  console.log('Server running on port 5000');
 });

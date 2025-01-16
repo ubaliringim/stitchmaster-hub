@@ -7,10 +7,16 @@ import MainLayout from "./components/Layout/MainLayout";
 import Dashboard from "./pages/Dashboard";
 import Employers from "./pages/Employers";
 import Inventory from "./pages/Inventory";
-import EmployerDashboard from "./pages/EmployerDashboard"; // Import the new component
+import EmployerDashboard from "./pages/EmployerDashboard";
 import { Routes, Route } from "react-router-dom";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false, // Disable retries for preview environment
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -21,7 +27,7 @@ const App = () => (
             <Route path="/" element={<Dashboard />} />
             <Route path="/employers" element={<Employers />} />
             <Route path="/inventory" element={<Inventory />} />
-            <Route path="/employer/:id" element={<EmployerDashboard />} /> {/* Add this route */}
+            <Route path="/employer/:id" element={<EmployerDashboard />} />
           </Routes>
         </MainLayout>
         <Toaster />

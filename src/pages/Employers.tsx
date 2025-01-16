@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Search, Plus, Edit, Trash } from 'lucide-react';
+import { Search, Plus, Pencil, Trash2 } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dialog";
 
 const fetchEmployers = async () => {
-  const response = await fetch('http://localhost/api.php'); // Call your XAMPP API
+  const response = await fetch('http://localhost/api.php');
   if (!response.ok) throw new Error('Failed to fetch');
   return response.json();
 };
@@ -70,7 +70,7 @@ const Employers = () => {
   const deleteMutation = useMutation({
     mutationFn: deleteEmployer,
     onSuccess: () => {
-      queryClient.invalidateQueries(['employers']);
+      queryClient.invalidateQueries({ queryKey: ['employers'] });
       toast({
         title: "Employer Deleted",
         description: "The employer has been successfully deleted.",
@@ -89,14 +89,14 @@ const Employers = () => {
   const addMutation = useMutation({
     mutationFn: addEmployer,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['employers']); // Refresh the employers list
+      queryClient.invalidateQueries({ queryKey: ['employers'] });
       toast({
         title: "Employer Added",
         description: "The employer has been successfully added.",
       });
-      setIsAddDialogOpen(false); // Close the dialog
-      setNewEmployer({ name: '', phone: '', role: '', status: '' }); // Reset form
-      navigate(`/employer/${data.id}`); // Navigate to the new employer's dashboard
+      setIsAddDialogOpen(false);
+      setNewEmployer({ name: '', phone: '', role: '', status: '' });
+      navigate(`/employer/${data.id}`);
     },
     onError: () => {
       toast({
@@ -112,20 +112,17 @@ const Employers = () => {
     employer.phone.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Handle delete with confirmation
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this employer?")) {
       deleteMutation.mutate(id);
     }
   };
 
-  // Handle form input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewEmployer((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle form submission
   const handleAddEmployer = (e: React.FormEvent) => {
     e.preventDefault();
     addMutation.mutate(newEmployer);
@@ -146,7 +143,6 @@ const Employers = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8 w-[300px]"
               onKeyDown={(e) => {
-                // Prevent form submission on Enter key
                 if (e.key === 'Enter') {
                   e.preventDefault();
                 }
@@ -181,11 +177,11 @@ const Employers = () => {
               <TableCell>{employer.status}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Edit
+                  <Pencil
                     className="h-4 w-4 text-blue-500 cursor-pointer hover:text-blue-700"
                     onClick={() => navigate(`/employer/${employer.id}`)}
                   />
-                  <Trash
+                  <Trash2
                     className="h-4 w-4 text-red-500 cursor-pointer hover:text-red-700"
                     onClick={() => handleDelete(employer.id)}
                   />
@@ -196,7 +192,6 @@ const Employers = () => {
         </TableBody>
       </Table>
 
-      {/* Add Employer Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent>
           <DialogHeader>

@@ -5,6 +5,7 @@ const Sidebar = () => {
   const location = useLocation();
   
   const menuItems = [
+    { icon: Home, label: "HOome", path: "/" },
     { icon: Home, label: "Dashboard", path: "/" },
     { icon: Users, label: "Employers", path: "/employers" },
     { icon: Package, label: "Inventory", path: "/inventory" },
